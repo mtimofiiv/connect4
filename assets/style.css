@@ -1,0 +1,67 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.325;
+  color: #383838;
+}
+
+a, a:active {
+  color: #ff4c00;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 702px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  padding: 20px 0;
+}
+
+#application {
+  border: 1px solid #cecece;
+  height: 600px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.row {
+  width: 100px;
+  float: left;
+  height: 600px;
+  background: white;
+}
+
+.row:hover {
+  background: #ccc;
+}
+
+.puck {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.player1 {
+  background: #ca2727;
+  border: 5px solid #a01f1f;
+}
+
+.player2 {
+  background: #3426cc;
+  border: 5px solid #211da8;
+}
