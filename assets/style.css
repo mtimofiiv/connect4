@@ -21,7 +21,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.container {
+.container, .modal .content > div {
   max-width: 702px;
   margin: 0 auto;
 }
@@ -29,6 +29,7 @@ a:hover {
 h1 {
   text-align: center;
   padding: 20px 0;
+  display: none;
 }
 
 #application {
@@ -36,6 +37,17 @@ h1 {
   height: 600px;
   border-radius: 6px;
   box-sizing: border-box;
+}
+
+.turn-indicator {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  color: white;
+}
+
+.turn-indicator div {
+  padding: 15px 0;
 }
 
 .row {
@@ -64,4 +76,70 @@ h1 {
 .player2 {
   background: #3426cc;
   border: 5px solid #211da8;
+}
+
+.modal, .modal .bg {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal .bg {
+  background: black;
+  opacity: 0.85;
+}
+
+.modal .close {
+  position: fixed;
+  right: 20px;
+  top: 5px;
+  color: #ccc;
+  font-size: 50px;
+  font-weight: bold;
+  z-index: 99999;
+}
+
+.modal .close:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.modal .content {
+  color: white;
+  position: absolute;
+  width: 100%;
+}
+
+.modal .content > div {
+  margin-top: 50px;
+}
+
+.modal .icon {
+  text-align: center;
+  font-size: 50px;
+}
+
+.modal .actions {
+  text-align: center;
+  margin: 50px 0 0 0;
+}
+
+.btn {
+  background: #ff4c00;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 20px;
+}
+
+.btn:hover {
+  background: white;
+  color: #ff4c00;
+  text-decoration: none;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }

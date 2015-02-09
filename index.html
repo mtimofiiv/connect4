@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Connect 4</title>
+    <title>fiiv connect 4</title>
 
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link type="text/css" rel="stylesheet" href="/assets/style.css" media="screen">
   </head>
   <body>
@@ -14,11 +15,59 @@
 
       <h1>Connect 4</h1>
 
-      <div id="application" ng-controller="c4.main">
+      <div id="application" ng-controller="c4.main" ng-cloak>
+
+        <div class="turn-indicator">
+          <div class="player{{player}}">Your turn, <i class="fa fa-user"></i> <strong>PLAYER {{player}}</strong></div>
+        </div>
 
         <div class="grid">
           <div class="row" ng-repeat="(col, array) in matrix" ng-click="makeMove(col)" id="{{col}}">
             <div class="puck player{{puck}}" ng-repeat="puck in array track by $index"></div>
+          </div>
+        </div>
+
+        <div class="modal" ng-show="modal">
+          <div class="bg"></div>
+          <a class="close" href="javascript:void(0);" ng-click="toggleModal()">&times;</a>
+          <div class="content">
+
+            <div class="modal-begin" ng-show="currentModal('begin')">
+              <p class="icon"><i class="fa fa-smile-o"></i></p>
+              <h2>Welcome to Fiiv Connect 4!</h2>
+
+              <p class="words">This is a two-player game. When it is your turn, click on the row you want to place your piece in. First one to connect 4 of the same colour horizontally, diagonally or vertically wins!</p>
+
+              <p class="actions">
+                <a href="javascript:void(0);" class="btn" ng-click="toggleModal()">Begin!</a>
+              </p>
+
+            </div>
+
+            <div class="modal-win" ng-show="currentModal('win')">
+              <p class="icon"><i class="fa fa-thumbs-up"></i></p>
+              <h2>Congrats, PLAYER {{player}}!</h2>
+
+              <p class="words">You win.</p>
+
+              <p class="actions">
+                <a href="javascript:void(0);" class="btn" ng-click="restart()">Play Again</a>
+              </p>
+
+            </div>
+
+            <div class="modal-draw" ng-show="currentModal('draw')">
+              <p class="icon"><i class="fa fa-meh-o"></i></p>
+              <h2>Nobody wins.</h2>
+
+              <p class="words">You both lose. Or win. Glass half full, or half empty, I guess. Try again?</p>
+
+              <p class="actions">
+                <a href="javascript:void(0);" class="btn" ng-click="restart()">Play Again</a>
+              </p>
+
+            </div>
+
           </div>
         </div>
 

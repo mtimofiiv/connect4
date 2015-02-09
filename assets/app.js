@@ -28,6 +28,10 @@
     // The last move of the player, stored for undo purposes
     $scope.lastCol = null;
 
+    // This controls what modal windows to show
+    $scope.modal = false;
+    $scope.whichModal = null;
+
     // Begins our match
     $scope.beginGame = function() {
       $scope.game = true;
@@ -54,9 +58,36 @@
       $scope.game = false;
 
       switch(result) {
-        case 'draw': console.log('Game ends in a draw');
-        case 'win': console.log('Player' + $scope.player + ' is victorious');
+        case 'draw': registerResult('draw');
+        case 'win': registerResult('win');
       }
+    };
+
+    // This is where we would send the result to the backend, if we had one...
+    $scope.registerResult = function(result) {
+      $scope.whichModal = result;
+      $scope.modal = true;
+    };
+
+    // Opens/closes the modal window
+    $scope.toggleModal = function() {
+      $scope.whichModal = null;
+      $scope.modal = !$scope.modal;
+    };
+
+    $scope.currentModal = function(block) {
+      return block === $scope.whichModal;
+    };
+
+    $scope.restart = function() {
+      $scope.beginGame();
+      $scope.toggleModal();
+    };
+
+    // Launches the initial modal and starts up some things
+    var initialize = function() {
+      $scope.modal = true;
+      $scope.whichModal = 'begin';
     };
 
     // Runs through the potential win scenarios to see if we have a winner
@@ -136,10 +167,10 @@
       // var deltaSE = checkVertex(row, column, -1);
 
       for (var x = -2; x <= 3; x++) {
-        
+
       }
 
-      return (deltaSW || deltaSE) ? true : false;
+      //return (deltaSW || deltaSE) ? true : false;
     };
 
     var checkVertex = function(row, column, operator) {
@@ -174,6 +205,8 @@
     var switchPlayer = function() {
       $scope.player = ($scope.player === 1) ? 2 : 1;
     };
+
+    initialize();
 
   });
 
