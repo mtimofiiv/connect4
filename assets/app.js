@@ -47,7 +47,7 @@
     // Initiates a move and tests to see if win conditions have been met
     $scope.makeMove = function(col) {
       if (!$scope.game) return;
-      if (typeof $scope.matrix[col] !== 'object') console.log('error');
+      if (typeof $scope.matrix[col] !== 'object') return;
       if ($scope.matrix[col].length >= 6) return;
       $scope.matrix[col].push($scope.player);
       calculatePotentialWin(col);
@@ -64,7 +64,7 @@
     };
 
     // This is where we would send the result to the backend, if we had one...
-    $scope.registerResult = function(result) {
+    var registerResult = function(result) {
       $scope.whichModal = result;
       $scope.modal = true;
     };
@@ -118,10 +118,12 @@
       }
     };
 
+    // If we're running out of space to put pucks, time to kill the game
     var calculatePotentialDraw = function() {
       return ($scope.turn >= 41) ? true: false;
     };
 
+    // Check for the vertical win condition
     var checkColumn = function(lastCol) {
       var column = $scope.matrix[lastCol];
       var count = 0;
@@ -139,6 +141,7 @@
       return win;
     };
 
+    // Check for the horizontal win condition
     var checkRows = function(lastCol) {
       var row = $scope.matrix[lastCol].length - 1;
       var count = 0;
@@ -156,6 +159,7 @@
       return win;
     };
 
+    // Check for diagonal win conditions
     var checkDiagonals = function(lastCol) {
       var row = $scope.matrix[lastCol].length - 1;
       var column = parseInt(lastCol.slice(-1));
@@ -173,6 +177,7 @@
       //return (deltaSW || deltaSE) ? true : false;
     };
 
+    // Abstract method for checking a diagonal vertex
     var checkVertex = function(row, column, operator) {
       var count = 0;
       var win = false;
@@ -193,6 +198,7 @@
       }
     };
 
+    // We need to figure out what the delta is to calculate the diagonal
     var calculateDelta = function(row, col, operator) {
       var delta = col;
       while (row > 0) {
@@ -202,6 +208,7 @@
       return delta;
     };
 
+    // Switches to a different player
     var switchPlayer = function() {
       $scope.player = ($scope.player === 1) ? 2 : 1;
     };
