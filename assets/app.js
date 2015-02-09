@@ -6,7 +6,15 @@
 
   var app = angular.module('connect4', ['LocalStorageModule']);
 
-  app.controller('c4.main', function($scope) {
+  app.config(function(localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('c4');
+  });
+
+  app.controller('c4.main', function($scope, localStorageService) {
+
+    if (localStorageService.isSupported) {
+
+    }
 
     // This stores the positions of the pucks in the rows
     $scope.matrix = {
@@ -49,9 +57,26 @@
       if (!$scope.game) return;
       if (typeof $scope.matrix[col] !== 'object') return;
       if ($scope.matrix[col].length >= 6) return;
+
+      $scope.lastCol = col;
+
       $scope.matrix[col].push($scope.player);
       calculatePotentialWin(col);
     };
+
+    $scope.undoMove = function() {
+      if (!$scope.game) return;
+
+      _.pullAt($scope.matrix[$scope.lastCol], $scope.matrix[$scope.lastCol].length - 1);
+
+      switchPlayer();
+      $scope.turn--;
+      $scope.lastCol = null;
+    };
+
+    $scope.undoPossible = function() {
+      return !!$scope.lastCol;
+    }
 
     // Completes the game and announces a winner
     $scope.finishGame = function(result) {

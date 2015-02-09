@@ -18,7 +18,9 @@
       <div id="application" ng-controller="c4.main" ng-cloak>
 
         <div class="turn-indicator">
-          <div class="player{{player}}">Your turn, <i class="fa fa-user"></i> <strong>PLAYER {{player}}</strong></div>
+          <div class="player{{player}}">
+            <p>Your turn, <i class="fa fa-user"></i> <strong>PLAYER {{player}}</strong> <span ng-show="undoPossible()">(<a href="javascript:void(0);" ng-click="undoMove()">Undo last move</a>)</span></p>
+          </div>
         </div>
 
         <div class="grid">
@@ -78,6 +80,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/vendor/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/assets/vendor/angular-local-storage/dist/angular-local-storage.min.js"></script>
     <script type="text/javascript" src="/assets/vendor/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="/assets/app.js"></script>
   </body>
