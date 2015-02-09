@@ -10,11 +10,7 @@
     localStorageServiceProvider.setPrefix('c4');
   });
 
-  app.controller('c4.main', function($scope, localStorageService) {
-
-    if (localStorageService.isSupported) {
-
-    }
+  app.controller('c4.main', function($scope, $timeout, $http, localStorageService) {
 
     // This stores the positions of the pucks in the rows
     $scope.matrix = {
@@ -23,6 +19,9 @@
 
     // Game is active?
     $scope.game = true;
+
+    // Are we watching a replay?
+    $scope.replay = false;
 
     // Which turn is it currently?
     $scope.turn = 0;
@@ -43,6 +42,7 @@
     // Begins our match
     $scope.beginGame = function() {
       $scope.game = true;
+      $scope.replay = false;
       $scope.turn = 0;
       $scope.player = 1;
       $scope.gameid++;
@@ -54,16 +54,19 @@
 
     // Initiates a move and tests to see if win conditions have been met
     $scope.makeMove = function(col) {
-      if (!$scope.game) return;
+      if (!$scope.game && !$scope.replay) return;
       if (typeof $scope.matrix[col] !== 'object') return;
       if ($scope.matrix[col].length >= 6) return;
 
       $scope.lastCol = col;
 
+      if (!$scope.replay) saveMove(col);
+
       $scope.matrix[col].push($scope.player);
       calculatePotentialWin(col);
     };
 
+    // Undoes the last move
     $scope.undoMove = function() {
       if (!$scope.game) return;
 
@@ -72,8 +75,32 @@
       switchPlayer();
       $scope.turn--;
       $scope.lastCol = null;
+
+      unsaveMove();
     };
 
+    // Show a replay of the last game for the benefit of the players
+    $scope.replay = function() {
+      $scope.toggleModal();
+      $scope.game = false;
+      $scope.replay = true;
+
+      $scope.replayMoves = [];
+
+      for (var i = 0; i < $scope.turn; i++) {
+        var key = $scope.gameid + '.' + i;
+        $scope.replayMoves.push(localStorageService.get(key));
+      }
+
+      $scope.turn = 0;
+
+      $timeout(function() {
+        var move = $scope.replayMoves[$scope.turn].slice(2);
+        $scope.makeMove(move);
+      }, 1000);
+    };
+
+    // Helper to test to see if it is possible to do an undo (ie. you only get one, the last one)
     $scope.undoPossible = function() {
       return !!$scope.lastCol;
     }
@@ -86,12 +113,6 @@
         case 'draw': registerResult('draw');
         case 'win': registerResult('win');
       }
-    };
-
-    // This is where we would send the result to the backend, if we had one...
-    var registerResult = function(result) {
-      $scope.whichModal = result;
-      $scope.modal = true;
     };
 
     // Opens/closes the modal window
@@ -109,6 +130,44 @@
     $scope.restart = function() {
       $scope.beginGame();
       $scope.toggleModal();
+    };
+
+    // Saves a move to local storage
+    var saveMove = function(col) {
+      if (!localStorageService.isSupported) return;
+      var key = $scope.gameid + '.' + $scope.turn;
+      localStorageService.set(key, $scope.player + '.' + col);
+    };
+
+    // In case of undo, we should remove the last move sent to local storage
+    var unsaveMove = function() {
+      if (!localStorageService.isSupported) return;
+      var key = $scope.gameid + '.' + $scope.turn;
+      localStorageService.remove(key);
+    };
+
+    // This is where we would send the result to the backend, if we had one...
+    var registerResult = function(result) {
+      $scope.whichModal = result;
+      $scope.modal = true;
+      sendToAPI();
+    };
+
+    // Send the results to our API
+    var sendToAPI = function() {
+      if (!localStorageService.isSupported) return;
+      var payload = { gameId: $scope.gameid, moves: [] };
+
+      for (var i = 0; i < $scope.turn; i++) {
+        var key = $scope.gameid + '.' + i;
+        var move = localStorageService.get(key).split('.');
+        payload.moves.push({ turn: i, player: parseInt(move[0]), column: move[1] });
+      }
+
+      console.log('If we had a backend API, we would send data now:');
+      console.log(payload);
+
+      $http.post('/games', payload);
     };
 
     // Launches the initial modal and starts up some things
