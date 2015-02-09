@@ -93,7 +93,7 @@
         var key = $scope.gameid + '.' + i;
         $scope.replayMoves.push(localStorageService.get(key));
       }
-      console.log($scope.replayMoves);
+
       $scope.turn = 0;
       replayMove();
     };
@@ -176,7 +176,7 @@
         payload.moves.push({ turn: i, player: parseInt(move[0]), column: move[1] });
       }
 
-      console.log('If we had a backend API, we would send data now:');
+      console.log('If we had a backend API, we would send this data now:');
       console.log(payload);
 
       //$http.post('/games', payload);
@@ -263,18 +263,64 @@
       var row = $scope.matrix[lastCol].length - 1;
       var column = parseInt(lastCol.slice(-1));
 
-      // Check for SW => NE diagonal
-      var deltaSW = checkVertex(row, column, 'sw');
+      var leftVector = checkVector(column, row, 'right');
+      var rightVector = checkVector(column, row, 'left');
 
-      // Check for SE => NW diagonal
-      var deltaSE = checkVertex(row, column, 'se');
-
-      return (deltaSW || deltaSE) ? true : false;
+      return (leftVector || rightVector) ? true : false;
     };
 
-    // Abstract method for checking a diagonal vertex
-    var checkVertex = function(row, column, direction) {
-      //var operator = () ? 
+    // We put together a nice array to check against for the 4-in-a-row
+    var checkVector = function(x, y, direction) {
+      var origin = findDelta(x, y, direction);
+      var count = 0;
+      var win = false;
+      var vertical = origin[1];
+
+      if (direction === 'right') {
+        for (var i = origin[0]; i <= 6; i++) {
+          if (typeof $scope.matrix['col' + i][vertical] !== 'undefined' && $scope.matrix['col' + i][vertical] === $scope.player) {
+            count++;
+            if (count >= 4) win = true;
+          } else {
+            count = 0;
+          }
+
+          vertical++;
+        }
+      } else {
+        for (var i = origin[0]; i >= 0; i--) {
+          if (typeof $scope.matrix['col' + i][vertical] !== 'undefined' && $scope.matrix['col' + i][vertical] === $scope.player) {
+            count++;
+            if (count >= 4) win = true;
+          } else {
+            count = 0;
+          }
+
+          vertical++;
+        }
+      }
+
+      return win;
+    };
+
+    // Here, we check for the delta of the diagonal
+    var findDelta = function(x, y, direction) {
+      var originX = x;
+      var originY = y;
+
+      if (direction === 'right') {
+        while (originX > 0 && originY > 0) {
+          originX--;
+          originY--;
+        }
+      } else {
+        while (originX < 6 && originY > 0) {
+          originX++;
+          originY--;
+        }
+      }
+
+      return [originX, originY];
     };
 
     // Switches to a different player
