@@ -263,19 +263,76 @@
       var row = $scope.matrix[lastCol].length - 1;
       var column = parseInt(lastCol.slice(-1));
 
-      // Check for SW => NE diagonal
-      var deltaSW = checkVertex(row, column, 'sw');
+      var sw = traverseVector(deltaSW(row, column), 1);
+      var se = traverseVector(deltaSE(row, column), -1);
 
-      // Check for SE => NW diagonal
-      var deltaSE = checkVertex(row, column, 'se');
-
-      return (deltaSW || deltaSE) ? true : false;
+      return (sw || se) ? true : false;
     };
 
-    // Abstract method for checking a diagonal vertex
-    var checkVertex = function(row, column, direction) {
-      //var operator = () ? 
+    var deltaSW = function(row, col) {
+      if (row === 0 || col === 0) return [row, col];
+
+      if (row > col) {
+        var x = row - col;
+        var y = 0;
+      } else if (row < col) {
+        var x = 0;
+        var y = col - row;
+      } else {
+        var x = 0;
+        var y = 0;
+      }
+      return [x, y];
     };
+
+    var deltaSE = function(row, col) {
+      if (row === 0 || col === 0) return [row, col];
+
+      var inverseRow = 6 - row;
+
+      if (inverseRow > col) {
+        var x = inverseRow - col;
+        var y = 0;
+      } else if (inverseRow < col) {
+        var x = 0;
+        var y = col - inverseRow;
+      } else {
+        var x = 0;
+        var y = 0;
+      }
+      return [6 - x, y];
+    };
+
+    var traverseVector = function(delta, direction) {
+      var vector = [];
+      var win = false;
+      var count = 0;
+
+      var x = delta[0];
+      var y = delta[1];
+
+      if (direction > 0) {
+
+        while (x < 7 && y < 6) {
+          if (typeof $scope.matrix['col' + x][y] !== 'undefined') vector.push($scope.matrix['col' + x][y]);
+          x++;
+          y++;
+        }
+
+      } else {
+
+        while (x <= 0 && y < 6) {
+          if (typeof $scope.matrix['col' + x][y] !== 'undefined') vector.push($scope.matrix['col' + x][y]);
+          x--;
+          y++;
+        }
+        
+      }
+
+      for (var i = 0; i < vector.length; i++) {
+        console.log(vector[i]);
+      }
+    }
 
     // Switches to a different player
     var switchPlayer = function() {
