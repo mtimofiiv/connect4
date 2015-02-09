@@ -271,7 +271,6 @@
 
       var leftVector = checkVector(column, row, 'right');
       var rightVector = checkVector(column, row, 'left');
-<<<<<<< HEAD
 
       return (leftVector || rightVector) ? true : false;
     };
@@ -307,43 +306,6 @@
         }
       }
 
-=======
-
-      return (leftVector || rightVector) ? true : false;
-    };
-
-    // We put together a nice array to check against for the 4-in-a-row
-    var checkVector = function(x, y, direction) {
-      var origin = findDelta(x, y, direction);
-      var count = 0;
-      var win = false;
-      var vertical = origin[1];
-
-      if (direction === 'right') {
-        for (var i = origin[0]; i <= 6; i++) {
-          if (typeof $scope.matrix['col' + i][vertical] !== 'undefined' && $scope.matrix['col' + i][vertical] === $scope.player) {
-            count++;
-            if (count >= 4) win = true;
-          } else {
-            count = 0;
-          }
-
-          vertical++;
-        }
-      } else {
-        for (var i = origin[0]; i >= 0; i--) {
-          if (typeof $scope.matrix['col' + i][vertical] !== 'undefined' && $scope.matrix['col' + i][vertical] === $scope.player) {
-            count++;
-            if (count >= 4) win = true;
-          } else {
-            count = 0;
-          }
-
-          vertical++;
-        }
-      }
-
->>>>>>> c4ffdf2ea761e837225f222b6750c5c981c39347
       return win;
     };
 
