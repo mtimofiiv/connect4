@@ -22,6 +22,7 @@
 
     // Are we watching a replay?
     $scope.replay = false;
+    $scope.replayMoves = [];
 
     // Which turn is it currently?
     $scope.turn = 0;
@@ -47,9 +48,7 @@
       $scope.player = 1;
       $scope.gameid++;
 
-      _.forEach($scope.matrix, function(col, n) {
-        $scope.matrix[n] = [];
-      });
+      resetMatrix();
     };
 
     // Initiates a move and tests to see if win conditions have been met
@@ -60,7 +59,7 @@
 
       $scope.lastCol = col;
 
-      if (!$scope.replay) saveMove(col);
+      if ($scope.game) saveMove(col);
 
       $scope.matrix[col].push($scope.player);
       calculatePotentialWin(col);
@@ -82,27 +81,26 @@
     // Show a replay of the last game for the benefit of the players
     $scope.replay = function() {
       $scope.toggleModal();
+      resetMatrix();
+
       $scope.game = false;
       $scope.replay = true;
+      $scope.player = 1;
 
       $scope.replayMoves = [];
 
-      for (var i = 0; i < $scope.turn; i++) {
+      for (var i = 0; i <= $scope.turn; i++) {
         var key = $scope.gameid + '.' + i;
         $scope.replayMoves.push(localStorageService.get(key));
       }
-
+      console.log($scope.replayMoves);
       $scope.turn = 0;
-
-      $timeout(function() {
-        var move = $scope.replayMoves[$scope.turn].slice(2);
-        $scope.makeMove(move);
-      }, 1000);
+      replayMove();
     };
 
     // Helper to test to see if it is possible to do an undo (ie. you only get one, the last one)
     $scope.undoPossible = function() {
-      return !!$scope.lastCol;
+      return ($scope.game) ? !!$scope.lastCol : false;
     }
 
     // Completes the game and announces a winner
@@ -132,16 +130,31 @@
       $scope.toggleModal();
     };
 
+    // Helper set on a timer to run the replay moves
+    var replayMove = function() {
+      var move = $scope.replayMoves[$scope.turn];
+      if (typeof move === 'undefined') return;
+
+      $scope.makeMove(move.slice(2));
+
+      if ($scope.turn < $scope.replayMoves.length - 1) $timeout(replayMove, 1000);
+    };
+
+    // If we start a new game or replay, we need to do this
+    var resetMatrix = function() {
+      _.forEach($scope.matrix, function(col, n) {
+        $scope.matrix[n] = [];
+      });
+    };
+
     // Saves a move to local storage
     var saveMove = function(col) {
-      if (!localStorageService.isSupported) return;
       var key = $scope.gameid + '.' + $scope.turn;
       localStorageService.set(key, $scope.player + '.' + col);
     };
 
     // In case of undo, we should remove the last move sent to local storage
     var unsaveMove = function() {
-      if (!localStorageService.isSupported) return;
       var key = $scope.gameid + '.' + $scope.turn;
       localStorageService.remove(key);
     };
@@ -155,7 +168,6 @@
 
     // Send the results to our API
     var sendToAPI = function() {
-      if (!localStorageService.isSupported) return;
       var payload = { gameId: $scope.gameid, moves: [] };
 
       for (var i = 0; i < $scope.turn; i++) {
@@ -167,7 +179,7 @@
       console.log('If we had a backend API, we would send data now:');
       console.log(payload);
 
-      $http.post('/games', payload);
+      //$http.post('/games', payload);
     };
 
     // Launches the initial modal and starts up some things
@@ -191,6 +203,7 @@
       if (checkDiagonals(col)) victory = true;
 
       if (victory) {
+        $scope.turn++;
         $scope.finishGame('win');
       } else {
         $scope.lastCol = col;
@@ -251,47 +264,17 @@
       var column = parseInt(lastCol.slice(-1));
 
       // Check for SW => NE diagonal
-      // var deltaSW = checkVertex(row, column, 1);
+      var deltaSW = checkVertex(row, column, 'sw');
 
       // Check for SE => NW diagonal
-      // var deltaSE = checkVertex(row, column, -1);
+      var deltaSE = checkVertex(row, column, 'se');
 
-      for (var x = -2; x <= 3; x++) {
-
-      }
-
-      //return (deltaSW || deltaSE) ? true : false;
+      return (deltaSW || deltaSE) ? true : false;
     };
 
     // Abstract method for checking a diagonal vertex
-    var checkVertex = function(row, column, operator) {
-      var count = 0;
-      var win = false;
-      var delta = calculateDelta(row, column, operator);
-      var deltaRow = 0;
-
-      var max = (operator > 0) ? 0 : $scope.matrix.length - 1;
-      var enumer = operator * -1;
-
-      for (var i = delta; i === max; i + enumer) {
-        if (typeof $scope.matrix['col' + i][deltaRow] !== 'undefined' && $scope.matrix['col' + i][deltaRow] === $scope.player) {
-          count++;
-          deltaRow++;
-          if (count >= 4) win = true;
-        } else {
-          count = 0;
-        }
-      }
-    };
-
-    // We need to figure out what the delta is to calculate the diagonal
-    var calculateDelta = function(row, col, operator) {
-      var delta = col;
-      while (row > 0) {
-        row--;
-        delta += operator;
-      }
-      return delta;
+    var checkVertex = function(row, column, direction) {
+      //var operator = () ? 
     };
 
     // Switches to a different player

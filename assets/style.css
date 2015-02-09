@@ -54,10 +54,12 @@ h1 {
   float: left;
   height: 600px;
   background: white;
+  position: relative;
 }
 
 .row:hover {
   background: #ccc;
+  cursor: pointer;
 }
 
 .puck {
@@ -65,6 +67,8 @@ h1 {
   height: 100px;
   border-radius: 50%;
   box-sizing: border-box;
+  float: right;
+  position: absolute;
 }
 
 .player1 {
