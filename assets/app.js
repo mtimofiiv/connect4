@@ -47,6 +47,7 @@
       $scope.turn = 0;
       $scope.player = 1;
       $scope.gameid++;
+      $scope.lastCol = null;
 
       resetMatrix();
     };
