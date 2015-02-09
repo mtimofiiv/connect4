@@ -104,6 +104,11 @@
       return ($scope.game) ? !!$scope.lastCol : false;
     }
 
+    // Don't show the replay button unless we can watch a replay!
+    $scope.replayAvailable = function() {
+      return true;
+    };
+
     // Completes the game and announces a winner
     $scope.finishGame = function(result) {
       $scope.game = false;

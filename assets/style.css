@@ -21,6 +21,10 @@ a:hover {
   text-decoration: underline;
 }
 
+.clear {
+  clear: both;
+}
+
 .container, .modal .content > div {
   max-width: 702px;
   margin: 0 auto;
@@ -35,7 +39,6 @@ h1 {
   border: 1px solid #cecece;
   border-radius: 6px;
   box-sizing: border-box;
-  height: 759px;
   margin: 0 0 50px 0;
 }
 
@@ -59,7 +62,7 @@ h1 {
 }
 
 .row:hover {
-  background: #ccc;
+  background: #e6e786;
   cursor: pointer;
 }
 

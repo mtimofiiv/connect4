@@ -27,6 +27,7 @@
           <div class="row" ng-repeat="(col, array) in matrix" ng-click="makeMove(col)" id="{{col}}">
             <div style="bottom: {{(($index + 1) * 100) - 100}}px;" class="puck player{{puck}}" ng-repeat="puck in array track by $index"></div>
           </div>
+          <div class="clear"></div>
         </div>
 
         <div class="modal" ng-show="modal">
@@ -53,7 +54,7 @@
               <p class="words">You win.</p>
 
               <p class="actions">
-                <a href="javascript:void(0);" class="btn" ng-click="restart()">Play Again</a> | <a href="javascript:void(0);" class="btn" ng-click="replay()">Watch Replay</a>
+                <a href="javascript:void(0);" class="btn" ng-click="restart()">Play Again</a><span ng-show="replayAvailable()"> | <a href="javascript:void(0);" class="btn" ng-click="replay()">Watch Replay</a></span>
               </p>
 
             </div>
