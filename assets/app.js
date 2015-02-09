@@ -4,7 +4,7 @@
 
 (function(angular, $, _) {
 
-  var app = angular.module('connect4', []);
+  var app = angular.module('connect4', ['LocalStorageModule']);
 
   app.controller('c4.main', function($scope) {
 
@@ -75,10 +75,12 @@
       $scope.modal = !$scope.modal;
     };
 
+    // A helper for modals telling it which modal content block to display
     $scope.currentModal = function(block) {
       return block === $scope.whichModal;
     };
 
+    // Starts a new game + closes modal
     $scope.restart = function() {
       $scope.beginGame();
       $scope.toggleModal();
