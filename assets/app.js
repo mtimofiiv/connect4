@@ -276,6 +276,8 @@
     };
 
     // We put together a nice array to check against for the 4-in-a-row
+    // Probaby a prime candidate for a refactor, cause this works however it's messy - would be 
+    // nice to remove the if branching here and have a single block of logic
     var checkVector = function(x, y, direction) {
       var origin = findDelta(x, y, direction);
       var count = 0;
@@ -310,6 +312,7 @@
     };
 
     // Here, we check for the delta of the diagonal
+    // Same as above, needs a refactor to remove the branching logic
     var findDelta = function(x, y, direction) {
       var originX = x;
       var originY = y;
