@@ -36,8 +36,6 @@ h1 {
 }
 
 #application {
-  border: 1px solid #cecece;
-  border-radius: 6px;
   box-sizing: border-box;
   margin: 0 0 50px 0;
 }
@@ -51,6 +49,12 @@ h1 {
 
 .turn-indicator div {
   padding: 15px 0;
+}
+
+.grid {
+  border: 1px solid #cecece;
+  border-radius: 6px;
+  margin: 15px 0;
 }
 
 .row {
@@ -149,4 +153,12 @@ h1 {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
+}
+
+.crap-browser {
+  padding: 10px;
+  background: #f2dede;
+  border: 1px solid #a94442;
+  border-radius: 6px;
+  margin-bottom: 20px;
 }

@@ -13,9 +13,13 @@
 
     <div class="container">
 
-      <h1>Connect 4</h1>
-
       <div id="application" ng-controller="c4.main" ng-cloak>
+
+        <h1>Connect 4</h1>
+
+        <div class="crap-browser" ng-show="crapBrowserCheck()">
+          <p><strong>Warning:</strong> somehow, you are using a browser that does not support modern features like <a href="http://diveintohtml5.info/storage.html" target="_blank">localStorage</a>. Some functionality, like replays, will not be available to you as a result.</p>
+        </div>
 
         <div class="turn-indicator">
           <div class="player{{player}}">

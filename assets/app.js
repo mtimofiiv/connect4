@@ -81,6 +81,7 @@
 
     // Show a replay of the last game for the benefit of the players
     $scope.replay = function() {
+      if (!localStorageService.isSupported) return;
       $scope.toggleModal();
       resetMatrix();
 
@@ -106,7 +107,14 @@
 
     // Don't show the replay button unless we can watch a replay!
     $scope.replayAvailable = function() {
-      return true;
+      if (!localStorageService.isSupported) return false;
+      var key = $scope.gameid + '.' + 0;
+      return (typeof localStorageService.get(key) !== 'undefined') ? true : false;
+    };
+
+    // Check for the ability to use localStorage
+    $scope.crapBrowserCheck = function() {
+      return (!localStorageService.isSupported) ? true : false;
     };
 
     // Completes the game and announces a winner
@@ -155,12 +163,14 @@
 
     // Saves a move to local storage
     var saveMove = function(col) {
+      if (!localStorageService.isSupported) return;
       var key = $scope.gameid + '.' + $scope.turn;
       localStorageService.set(key, $scope.player + '.' + col);
     };
 
     // In case of undo, we should remove the last move sent to local storage
     var unsaveMove = function() {
+      if (!localStorageService.isSupported) return;
       var key = $scope.gameid + '.' + $scope.turn;
       localStorageService.remove(key);
     };
@@ -174,6 +184,7 @@
 
     // Send the results to our API
     var sendToAPI = function() {
+      if (!localStorageService.isSupported) return;
       var payload = { gameId: $scope.gameid, moves: [] };
 
       for (var i = 0; i < $scope.turn; i++) {
@@ -276,7 +287,7 @@
     };
 
     // We put together a nice array to check against for the 4-in-a-row
-    // Probaby a prime candidate for a refactor, cause this works however it's messy - would be 
+    // Probaby a prime candidate for a refactor, cause this works however it's messy - would be
     // nice to remove the if branching here and have a single block of logic
     var checkVector = function(x, y, direction) {
       var origin = findDelta(x, y, direction);
